@@ -126,7 +126,7 @@ function startVisualization() {
         }
         
         step++;
-        animationTimeouts.push(setTimeout(play, 400));
+        animationTimeouts.push(setTimeout(play, 800));
     }
     play();
 }
