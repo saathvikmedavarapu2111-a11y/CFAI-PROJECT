@@ -1,14 +1,19 @@
-# Selection Sort vs Quick Sort Webpage
+# SELECTION SORT VS QUICK SORT WEBPAGE
 
-**Course Project Report**
+*An Interactive Algorithmic Performance Visualizer*
+
+---
+
+<!-- PAGE BREAK -->
+
+# PROJECT TEAM MEMBERS
+
+* ### **Medavarapu Saathvik** — Roll No: 2510030150
+* ### **Akshith Kumar** — Roll No: 2510030048
 
 ---
 
-### Team Members
-* **Medavarapu Saathvik** — Roll No: 2510030150
-* **Akshith Kumar** — Roll No: 2510030048
-
----
+<!-- PAGE BREAK -->
 
 ## 1. Problem Statement
 
@@ -22,34 +27,35 @@ There is a lack of simple, offline-capable interactive platforms that combine ba
 
 ## 2. Methodology
 
-The core idea of this project is to build an interactive sorting visualizer that executes the sorting logic on a Java backend and renders the step-by-step animations on a web frontend.
+The core methodology of this project lies in a hybrid, serverless execution and visualization framework. Rather than simulating the sorting process dynamically inside JavaScript (which is prone to runtime lags and does not represent native compiled speed), the sorting process is executed on a native Java JVM. Java acts as the backend engine, running the actual algorithms and recording their metrics, while a static web interface acts as a synchronized playback dashboard.
 
-### A. System Architecture & Components
-To keep the application simple to run and easy to explain, we avoided complex HTTP web servers (like Spring Boot or Servlets) and built a **file-based serverless bridge**:
+### A. Core Implementation Details & Bridge Architecture
+To enable offline-compatible execution without web servers, we designed a file-based data bridge. The project consists of the following components:
 
-1. **Java Backend Processor (`SortComparison.java`)**: 
-   * Reads the array size and elements from the user via the console using `Scanner`.
-   * Clones the array and sorts it using compiled Java implementations of Selection Sort and Quick Sort.
-   * Tracks execution times using `System.nanoTime()` and counts the comparisons and swaps.
-   * Logs every comparison, swap, pivot selection, and minimum-index change into a state history list.
-   * Exports these logs and statistics directly into a JavaScript file called `data.js` as a global variable.
-2. **Web Frontend (`index.html`, `style.css`, `script.js`, `about.html`)**:
-   * `index.html` loads the generated `data.js` file.
-   * `script.js` parses the sorting steps from `data.js` and updates the heights and colors of visual bars representing the array.
-   * It plays back the animation frames in synchronization at a fixed slow speed (800ms) to make the visual transition easily trackable.
-   * `about.html` details where the components are located, how the bridge works, and the real-world industrial jobs of each algorithm.
+1. **Java Core Engine (`SortComparison.java`)**: 
+   * Takes user input elements from the console using the `Scanner` class.
+   * Implements native Selection Sort and Quick Sort algorithms using basic loops and division pivots.
+   * Instantiates tracker classes that count the exact comparison steps and swap operations.
+   * Uses a custom class, `SortStep`, to capture the snapshot state of the array at each operation.
+   * Saves these operation steps and time metrics directly to a Javascript file, `data.js`, in the root folder.
+2. **The Web Visualizer Interface**:
+   * `index.html`: Structures the visual cards, color legend, performance table, and Java source codes.
+   * `style.css`: Modern, highly clean dark-theme layout using CSS variables, grids, and glassmorphic cards.
+   * `script.js`: Reads the `data.js` snapshots and handles the playback. It runs a synchronized timeout loop at a fixed slow speed (800ms) to animate the bars side-by-side, displaying descriptive text of each swap/comparison.
 
 ---
 
-### B. Algorithm Explanations & Implementation Details
+### B. Algorithmic Internals & Real-World Jobs
 
 #### 1. Selection Sort
-* **Concept**: Divides the array into a sorted and unsorted boundary. It repeatedly scans the unsorted section to find the minimum element, and swaps it with the first element of the unsorted section.
-* **Why and Where it is used**: Selection Sort has a worst-case time complexity of $O(N^2)$, but it performs a maximum of only $O(N)$ swaps (at most 1 swap per outer loop). In embedded systems, sensors, and IoT devices with flash memory or EEPROM, writing to memory is slow and degrades the hardware. Selection Sort is used here for small arrays to minimize write cycles.
+* **Code Location**: `SSort` class in `SortComparison.java`.
+* **Execution Job**: Divides the array into a sorted and unsorted boundary. It searches the unsorted part to find the minimum element, and swaps it with the first element of the unsorted boundary, expanding the sorted section by one. It runs in $O(N^2)$ time complexity but performs at most $O(N)$ swaps.
+* **Real-World Job**: Utilized in embedded firmware and flash memory hardware where write-cycles are slow and damage the physical storage cells. It optimizes hardware lifespan by reducing swaps.
 
 #### 2. Quick Sort
-* **Concept**: A divide-and-conquer algorithm that selects a "pivot" element (the first element of the subarray in our code) and partitions the array such that all elements smaller than the pivot go to its left, and all elements larger go to its right. It then recursively applies the same process to the left and right halves.
-* **Why and Where it is used**: Quick Sort has an average-case time complexity of $O(N \log N)$ and is extremely fast. It works in-place (requiring only stack memory for recursion) and has excellent CPU cache locality. It is used in operating system kernels, databases, and programming language standard libraries (like Java's `Arrays.sort()`) to sort large datasets at maximum speed.
+* **Code Location**: `QSort` class in `SortComparison.java`.
+* **Execution Job**: A divide-and-conquer partition algorithm. It selects a pivot, moves all elements smaller than the pivot to the left and larger to the right, and recursively partitions the left and right sub-sections. It runs in $O(N \log N)$ average-case speed and operates in-place.
+* **Real-World Job**: Added in operating system kernels, databases, and standard programming libraries (like Java's `Arrays.sort()`) to handle massive data files at CPU clock speed.
 
 ---
 
